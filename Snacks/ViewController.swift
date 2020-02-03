@@ -27,6 +27,8 @@
 /// THE SOFTWARE.
 
 import UIKit
+import CoreML
+import Vision
 
 class ViewController: UIViewController {
   
@@ -36,6 +38,26 @@ class ViewController: UIViewController {
   @IBOutlet var resultsView: UIView!
   @IBOutlet var resultsLabel: UILabel!
   @IBOutlet var resultsConstraint: NSLayoutConstraint!
+    
+    lazy var classificationRequest: VNCoreMLRequest = {
+      do {
+        // 1
+        let healthySnacks = HealthySnacks()
+        // 2
+        let visionModel = try VNCoreMLModel(for: healthySnacks.model)
+        // 3
+        let request = VNCoreMLRequest(model: visionModel,
+                                      completionHandler: {
+          [weak self] request, error in
+          print("Request is finished!", request.results)
+        })
+        // 4
+        request.imageCropAndScaleOption = .centerCrop
+        return request
+      } catch {
+        fatalError("Failed to create VNCoreMLModel: \(error)")
+      }
+    }()
 
   var firstTime = true
 
