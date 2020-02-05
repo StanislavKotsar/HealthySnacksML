@@ -145,6 +145,8 @@ class ViewController: UIViewController {
           // 3
           if results.isEmpty {
             self.resultsLabel.text = "nothing found"
+          } else if results[0].confidence < 0.8 {
+            self.resultsLabel.text = "not sure"
           } else {
             self.resultsLabel.text = String(format: "%@ %.1f%%",
                                             results[0].identifier,
